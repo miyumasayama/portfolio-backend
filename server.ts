@@ -7,7 +7,10 @@ app.get("/", (req: express.Request, res: express.Response) => {
   res.send("Hello, world!");
 });
 
-app.get("/api", (req: express.Request, res: express.Response) => {
+app.get("/costumes", (req: express.Request, res: express.Response) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.json([
     {
       id: 1,
