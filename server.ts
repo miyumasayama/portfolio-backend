@@ -6,6 +6,13 @@ dotenv.config();
 const app: express.Express = express();
 const port = process.env.SERVER_PORT;
 app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' https://vercel.live"
+  );
+  next();
+});
 
 import mysql from "mysql2";
 
@@ -27,7 +34,7 @@ connection.connect((error) => {
 
 app.get("/costumes", async (req, res) => {
   const query = "SELECT * FROM costumes"; // Adjust this to your actual table and fields
-
+  console.log(query);
   connection.query(query, (error, results) => {
     if (error) {
       console.error("Error fetching costumes: ", error);
