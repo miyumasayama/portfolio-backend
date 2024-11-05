@@ -1,42 +1,42 @@
 import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app: express.Express = express();
-const port = 8000;
+const port = process.env.SERVER_PORT;
+app.use(cors());
 
-app.get("/", (req: express.Request, res: express.Response) => {
-  res.send("Hello, world!");
+import mysql from "mysql2";
+
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
-app.get("/costumes", (req: express.Request, res: express.Response) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.json([
-    {
-      id: 1,
-      name: "りんご",
-      price: 200,
-      image: "https://source.unsplash.com/gDPaDDy6_WE",
-    },
-    {
-      id: 2,
-      name: "バナナ",
-      price: 300,
-      image: "https://source.unsplash.com/zrF6ACPLhPM",
-    },
-    {
-      id: 3,
-      name: "みかん",
-      price: "150",
-      image: "https://source.unsplash.com/bogrLtEaJ2Q",
-    },
-    {
-      id: 4,
-      name: "メロン",
-      price: "2000",
-      image: "https://source.unsplash.com/8keUtGmy0xo",
-    },
-  ]);
+connection.connect((error) => {
+  if (error) {
+    console.error("Error connecting to MySQL: ", error);
+    return;
+  }
+
+  console.log("Success connecting to MySQL");
+});
+
+app.get("/costumes", async (req, res) => {
+  const query = "SELECT * FROM costumes"; // Adjust this to your actual table and fields
+
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Error fetching costumes: ", error);
+      return res.status(500).json({ error: "Could not retrieve costumes" });
+    }
+
+    // Respond with the retrieved costume data
+    res.json(results);
+  });
 });
 
 app.listen(port, () => {
