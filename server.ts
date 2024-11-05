@@ -42,3 +42,5 @@ app.get("/costumes", async (req, res) => {
 app.listen(port, () => {
   console.log(`port ${port} でサーバー起動中`);
 });
+
+export default app;
