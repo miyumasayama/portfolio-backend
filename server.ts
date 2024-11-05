@@ -1,17 +1,19 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app: express.Express = express();
-const port = 8000;
+const port = process.env.SERVER_PORT;
 app.use(cors());
 
 import mysql from "mysql2";
 
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "password",
-  database: "portfolio",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 connection.connect((error) => {
@@ -21,10 +23,6 @@ connection.connect((error) => {
   }
 
   console.log("Success connecting to MySQL");
-});
-
-app.get("/", (req: express.Request, res: express.Response) => {
-  res.send("Hello, world!");
 });
 
 app.get("/costumes", async (req, res) => {
